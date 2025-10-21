@@ -20,3 +20,12 @@ export const isAdmin = (req, res, next) => {
   }
   next();
 };
+
+export const isVerifyEmail = (req, res, next) => {
+  if (!req.user.isVerified) {
+    return res
+      .status(403)
+      .json({ message: "Access denied. Please verify your email." });
+  }
+  next();
+};

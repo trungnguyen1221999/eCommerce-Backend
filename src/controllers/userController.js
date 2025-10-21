@@ -2,6 +2,7 @@ import {
   generalAccessToken,
   generalRefreshToken,
 } from "../helpers/generalToken.js";
+import { sendVerifyEmail } from "../helpers/sendVerifyEmail.js";
 import UserModel from "../models/userModels.js";
 import bcrypt from "bcryptjs";
 
@@ -28,14 +29,30 @@ export const register = async (req, res) => {
       password: hashedPassword,
     });
 
-    return res
-      .status(201)
-      .json({ message: "User registered successfully.", user: newUser });
+    const verifyToken = generalAccessToken(newUser);
+
+    // Gửi email xác thực
+    await sendVerifyEmail({
+      to: newUser.email,
+      subject: "Verify your email at Kai-Nguyen",
+      text: "Please verify your email.",
+      html: `
+        <b>Hello ${newUser.name},</b>
+        <p>Please verify your email by clicking the link below:</p>
+        <a href="${process.env.CLIENT_URL}/verify-email?token=${verifyToken}">Verify Email</a>
+      `,
+    });
+
+    return res.status(201).json({
+      message: "User registered successfully.",
+      user: newUser,
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Server error." });
   }
 };
+
 
 // LOGIN
 export const login = async (req, res) => {

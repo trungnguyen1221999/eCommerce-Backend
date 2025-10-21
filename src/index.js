@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3000;
 
 // Start the server on port 3000
 
-app.use("api/users", userRouter);
+app.use("/api/users", userRouter);
 app.listen(PORT, (req, res) => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
