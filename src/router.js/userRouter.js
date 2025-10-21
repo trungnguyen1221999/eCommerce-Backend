@@ -6,13 +6,14 @@ import {
   changeUserRole,
   deleteUser,
 } from "../controllers/userController.js";
+import { AuthMiddleware, isAdmin } from "../middleware.js/AuthMiddleware.js";
 
 const userRouter = Router();
 
 userRouter.post("/register", register);
 userRouter.post("/login", login);
-userRouter.get("/users", getAllUsers);
-userRouter.put("/users/:id/role", changeUserRole);
-userRouter.delete("/users/:id", deleteUser);
-userRouter.put("/users/:id/password", changeUserRole);
+userRouter.get("/users", AuthMiddleware, isAdmin, getAllUsers);
+userRouter.put("/users/:id/role", AuthMiddleware, isAdmin, changeUserRole);
+userRouter.delete("/users/:id", AuthMiddleware, isAdmin, deleteUser);
+userRouter.put("/users/:id/password", AuthMiddleware, changeUserRole);
 export default userRouter;
